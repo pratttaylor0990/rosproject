@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<launch>
+
+<node pkg="taylor_ros" type="laserScan" name="laserScan_pub"/>
+<!-- rosrun taylor_ros laserScan-->
+
+<node pkg="tf" type="static_transform_publisher" name="base_link" 
+args="0 0 0 0 0 0 1 map laser_frame 10"/>
+<!-- rosrun tf static_transform_publisher 0 0 0 0 0 0 1 base_link laser_frame 10 -->
+<!--
+<arg name="model" />
+<arg name="gui" default="true" />
+<arg name="rvizconfig" default="$(find taylor_ros)/rviz/urdf.rviz" />
+
+<param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+<param name="use_gui" value="$(arg gui)"/>
+
+<node name="joint_state_publisher" pkg="joint_state_publisher" 				type="joint_state_publisher" />
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+ <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+-->
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find taylor_ros)/urdf/robot.xacro'"/>
+
+<!--combine joints-->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+<!--run rviz-->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find taylor_ros)/launch/config.rviz"/>
+<!--send joint values-->    
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" >
+        <param name="use_gui" value="True"/>
+    </node>
+
+
+</launch>

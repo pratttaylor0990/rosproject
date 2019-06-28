@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+
+<!--start laser_frame node-->
+	<node pkg="taylor_ros" type="laserScan" name="laserScan_pub"/>
+<!-- rosrun taylor_ros laserScan-->
+
+
+<!--transform from laser_frame to robot frame (tf node)-->
+	<node pkg="tf" type="static_transform_publisher" name="base_link" 
+args="0 -3.5 0 0 0 0 1 base_link laser_frame 10"/>
+<!-- rosrun tf static_transform_publisher 0 0 0 0 0 0 1 base_link laser_frame 10 -->
+
+
+	<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find taylor_ros)/urdf/r2d2.xacro'"/>
+
+<!--combine joints-->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+<!--run rviz-->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find taylor_ros)/launch/config_r2d2.rviz"/>
+<!--send joint values-->    
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" >
+        <param name="use_gui" value="True"/>
+    </node>
+
+
+</launch>
